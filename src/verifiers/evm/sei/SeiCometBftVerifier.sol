@@ -269,8 +269,7 @@ contract SeiCometBftVerifier is ClprEvmBundleVerifier {
         // Short-bytes(20) Solidity layout: [addr 20B left-aligned][zeros 11B][length*2 = 0x28]
         bytes32 expectedSlot;
         assembly {
-            // bytes20 is left-aligned in EVM assembly (top 20 bytes = address, bottom 12 = zero);
-            // OR in 0x28 (length*2 for a 20-byte Solidity `bytes` short-value) in the last byte.
+            // No shift: `bytes20` is already left-aligned, so only the length tag needs OR-ing in.
             expectedSlot := or(lServiceAddr, 0x28)
         }
         if (slotValues[0] != expectedSlot) revert ServiceAddressSlotMismatch();
